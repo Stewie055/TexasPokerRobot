@@ -1,0 +1,6 @@
+[submodule "works/libs/deuces"]
+	path = works/libs/deuces
+	url = https://github.com/worldveil/deuces
+[submodule "works/libs/holdem_calc"]
+	path = works/libs/holdem_calc
+	url = https://github.com/ktseng/holdem_calc
