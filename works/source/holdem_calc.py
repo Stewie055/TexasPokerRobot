@@ -7,7 +7,7 @@ import holdem_functions
 def calc(cards):
 
     # generate parameter
-    hole_cards = parse_hole_cards(cards[:2])
+    hole_cards = holdem_argparser.parse_hole_cards(cards[:2])
     given_board = None
     if cards[5]:
         given_board = holdem_argparser.parse_cards(cards[2:6])
