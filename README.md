@@ -3,7 +3,9 @@
 
 ## Installation
 git clone --recursive git@github.com:yutianqiuhao/TexasPokerRobot.git game
+
 cd game
+
 touch works/libs/holdem_calc/__init__.py
 
 ## RUN
