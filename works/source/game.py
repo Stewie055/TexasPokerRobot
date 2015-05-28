@@ -8,7 +8,6 @@ import card_probability
 import cards2_judge as decision
 from card import Card
 from player import Player
-# from decision import cards2_judge
 
 # 0,1-hands 2,3,4-flop 5-turn 6-river
 hand_cards = [None]*2
@@ -34,7 +33,6 @@ def update_player_from_seat(lines):
     global opponent_dic
     global is_game_over
     global num_player
-    opponent_dic = {}
     num_player = 0
 
     for line in lines:
@@ -43,10 +41,11 @@ def update_player_from_seat(lines):
             pid = parameter[-4]
             if pid != client_pid:
                 num_player += 1
-                if not pid in opponent_dic:
-                    opponent_dic[pid] = Player()
-                else:
+                if pid in opponent_dic:
                     opponent_dic[pid].reset_bet_and_action()
+                else:
+                    print 'Player() new'
+                    opponent_dic[pid] = Player()
         except:
             is_game_over = True
             print 'seat parse error'
@@ -60,6 +59,8 @@ def update_player_from_showdown(lines):
             pid = line.split(' ')[1]
             if pid != client_pid:
                 opponent_dic[pid].update_from_showdown(line, board_cards)
+                print 'card_strength_history:'
+                print opponent_dic[pid].card_strength_history
         except:
             is_game_over = True
             print 'showdown parse error'
@@ -130,36 +131,56 @@ def creat_oppo_array():
 def creat_oppo_history_array():
     playermovement = []
     playerrank = []
+    card_player = []
     for key in opponent_dic:
         oppo = opponent_dic[key]
         playerrank.append(oppo.card_strength_history)
         playermovement.append(oppo.action_count_history)
+        card_player.append(oppo.card_history)
 
-    return playermovement, playerrank
+    return playermovement, playerrank, card_player
 
 def make_decision():
     global round_state
     round_state += 1
     (oppobehave, opponum) = creat_oppo_array()
-    (playermovement, playerrank) = creat_oppo_history_array()
+    (playermovement, playerrank, card_player) = creat_oppo_history_array()
 
     action = None
-    import pdb
-    # pdb.set_trace()
 
+    '''
+    if error occurs return "check"
+    '''
     if board_state == 'hold':
         card = hand_cards + [None]*7
-        action = 'check'
-        # action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+        try:
+            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank)
+        except:
+            print 'blind decision error'
+            action = 'check'
     elif board_state == 'flop':
         card = hand_cards + board_cards + [None]*2
-        action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+        try:
+            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+        except:
+            print 'flop decision error'
+            action = 'check'
     elif board_state == 'turn':
         card = hand_cards + board_cards + [None]
-        action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+        try:
+            action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+        except:
+            print 'turn decision error'
+            action = 'check'
     elif board_state == 'river':
         card = hand_cards + board_cards
-        action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+        try:
+            action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+        except:
+            print 'river decision error'
+            action = 'check'
+
+    print 'board_state is ', board_state
     print 'send message to server: %s\n' % action
     return action
 

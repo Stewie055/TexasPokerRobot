@@ -12,6 +12,7 @@ class Player:
     def __init__(self):
         self.bet = []
         self.state = []
+        self.card_history = []
         self.card_strength_history = []
         self.action_count_history = [0]*5
 
@@ -35,4 +36,5 @@ class Player:
         card1_str = str(Card(parameter[2], parameter[3]))
         card2_str = str(Card(parameter[4], parameter[5]))
         cards = [card1_str, card2_str] + board_cards
+        self.card_history.append([card1_str, card2_str])
         self.card_strength_history.append(getRank(cards))
