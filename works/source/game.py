@@ -4,14 +4,15 @@ import re
 import time
 import traceback
 
-from calc import card_probability#, card_strength
-from model.card import Card
-from model.player import Player
+import card_probability
+import cards2_judge as decision
+from card import Card
+from player import Player
 # from decision import cards2_judge
 
 # 0,1-hands 2,3,4-flop 5-turn 6-river
-hand_card = [None]*2
-board_card = []
+hand_cards = [None]*2
+board_cards = []
 probability = [None]*10
 
 # state
@@ -29,7 +30,7 @@ client_pid = ''
 is_game_over = False
 
 # parse socket command_block
-def init_player_seat(lines):
+def update_player_from_seat(lines):
     global opponent_dic
     global is_game_over
     global num_player
@@ -42,10 +43,40 @@ def init_player_seat(lines):
             pid = parameter[-4]
             if pid != client_pid:
                 num_player += 1
-                opponent_dic[pid] = Player()
+                if not pid in opponent_dic:
+                    opponent_dic[pid] = Player()
+                else:
+                    opponent_dic[pid].reset_bet_and_action()
         except:
             is_game_over = True
             print 'seat parse error'
+
+def update_player_from_showdown(lines):
+    global opponent_dic
+    global is_game_over
+
+    for line in lines[7:]:
+        try:
+            pid = line.split(' ')[1]
+            if pid != client_pid:
+                opponent_dic[pid].update_from_showdown(line, board_cards)
+        except:
+            is_game_over = True
+            print 'showdown parse error'
+
+def update_player_from_inquire(lines):
+    global opponent_dic
+    global is_game_over
+
+    for line in lines[:-1]:
+        parameter = line.split(' ')
+        pid = parameter[0]
+        try:
+            if pid != client_pid:
+                opponent_dic[pid].update_from_inquire(line)
+        except:
+            is_game_over = True
+            print 'inquire parse error'
 
 def card_parse(lines):
     cards = []
@@ -64,19 +95,26 @@ def card_parse(lines):
         return card_str
     return cards
 
-def oppo_parse(lines):
-    global opponent_dic
-    global is_game_over
+def card_update(command, body):
+    global board_state
+    board_state = command
 
-    for line in lines[:-1]:
-        parameter = line.split(' ')
-        pid = parameter[0]
-        try:
-            if pid != client_pid:
-                opponent_dic[pid].update_bet_from_inquire(line)
-        except:
-            is_game_over = True
-            print 'oppo parse error'
+    global round_state
+    round_state = 0
+
+    global board_cards
+    global probability
+    if command == 'hold':
+        global hand_cards
+        hand_cards = card_parse(body)
+    elif command == 'flop':
+        board_cards = card_parse(body)
+        probability = card_probability.calc(hand_cards, board_cards)
+    elif command == 'turn':
+        board_cards.append(card_parse(body))
+        probability = card_probability.calc(hand_cards, board_cards)
+    elif command == 'river':
+        board_cards.append(card_parse(body))
 
 def creat_oppo_array():
     oppobehave = []
@@ -89,6 +127,42 @@ def creat_oppo_array():
 
     return oppobehave, opponum
 
+def creat_oppo_history_array():
+    playermovement = []
+    playerrank = []
+    for key in opponent_dic:
+        oppo = opponent_dic[key]
+        playerrank.append(oppo.card_strength_history)
+        playermovement.append(oppo.action_count_history)
+
+    return playermovement, playerrank
+
+def make_decision():
+    global round_state
+    round_state += 1
+    (oppobehave, opponum) = creat_oppo_array()
+    (playermovement, playerrank) = creat_oppo_history_array()
+
+    action = None
+    import pdb
+    # pdb.set_trace()
+
+    if board_state == 'hold':
+        card = hand_cards + [None]*7
+        action = 'check'
+        # action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+    elif board_state == 'flop':
+        card = hand_cards + board_cards + [None]*2
+        action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+    elif board_state == 'turn':
+        card = hand_cards + board_cards + [None]
+        action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+    elif board_state == 'river':
+        card = hand_cards + board_cards
+        action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+    print 'send message to server: %s\n' % action
+    return action
+
 def parse_with_recv(recv):
     command_block = re.finditer(r"(\w+)/ \n([\s\S]*?)/(\1) \n", recv)
 
@@ -97,46 +171,16 @@ def parse_with_recv(recv):
         body = block.group(2).splitlines()
 
         if command == 'inquire':
-            # oppo_parse(body)
-            # (oppobehave, opponum) = creat_oppo_array()
+            update_player_from_inquire(body)
             return make_decision()
-        # elif command == 'showdown':
-        #     return 
+        elif command == 'showdown':
+            update_player_from_showdown(body)
         elif command == 'seat':
-            init_player_seat(body)
+            update_player_from_seat(body)
         elif command in ['hold','flop','turn','river']:
             card_update(command, body)
 
     return None
-
-def card_update(command, body):
-    global board_state
-    board_state = command
-
-    global round_state
-    round_state = 0
-
-    global board_card
-    global probability
-    if command == 'hold':
-        global hand_card
-        hand_card = card_parse(body)
-    elif command == 'flop':
-        board_card = card_parse(body)
-        probability = card_probability.calc(hand_card, board_card)
-    elif command == 'turn':
-        board_card.append(card_parse(body))
-        probability = card_probability.calc(hand_card, board_card)
-    elif command == 'river':
-        board_card.append(card_parse(body))
-
-def make_decision():
-    global round_state
-    round_state += 1
-
-    action = 'check'
-    print 'send message to server: %s\n' % action
-    return action
 
 def run(argv):
 

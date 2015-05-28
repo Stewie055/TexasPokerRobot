@@ -74,7 +74,8 @@ echo "start playmates"
 ./random   127.0.0.1 6000 127.0.0.7 6007 7777 0</dev/null 1>/dev/null 2>/dev/null &
 
 echo "start your game"
-./game 127.0.0.1 6000 127.0.0.8 6008 8888
+nohup ./game 127.0.0.1 6000 127.0.0.8 6008 8888 >my.txt 2>&1&
+# ./game 127.0.0.1 6000 127.0.0.8 6008 8888
 #gdb ./game -ex "r 127.0.0.1 6000 127.0.0.8 6008 8888"
 
 popd >/dev/null

@@ -31,8 +31,11 @@ def main():
 	for i in range(num_player):
 		for x in range(len(board_player)):
 			card=[card_player[i][x][0],card_player[i][x][1],board_player[x][0],board_player[x][1],board_player[x][2],board_player[x][3],board_player[x][4]]
+                        t11 = time.clock()
 			rank_temp=cn.getRank4(card)
 			playerrank[i].append(rank_temp) 
+                        t12 = time.clock()
+                        print 'get Rank one time : ', t12-t11
 	t2=time.clock()
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
 	#print "playerrank is : %s"%playerrank
@@ -168,7 +171,6 @@ def getRankBoard(card):
 	board2=[Card.new(card[4]),Card.new(card[5]),Card.new(card[6])]
 	rankboard=evaluator.evaluate(board1,board2)
 	return rankboard
-main()
 
 
 
