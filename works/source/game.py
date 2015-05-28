@@ -4,58 +4,35 @@ import re
 import time
 import traceback
 
-import cards2
-import holdem_calc
+from calc import card_probability#, card_strength
+from model.card import Card
+from model.player import Player
+# from decision import cards2_judge
 
 # 0,1-hands 2,3,4-flop 5-turn 6-river
-cards = [None]*7
-card_index = 0
-hand_probability = [None]*10
+hand_card = [None]*2
+board_card = []
+probability = [None]*10
+
+# state
+board_state = ''
+round_state = 0
 
 # key is player's PID
 num_player = 0
 opponent_dic = {}
 
 # my PID
-my_pid = ''
+client_pid = ''
 
 # game over flag
 is_game_over = False
 
-# state
-round_state = 0
-
-# Basic class for card and opponent
-class Card:
-    def __init__(self, color, number):
-        self.color = color
-        self.number = number
-
-    def __str__(self):
-        if self.number == '10':
-            return 'T' + self.color[0].lower()
-        return self.number + self.color[0].lower()
-
-class Player:
-    def __init__(self):
-        self.bet = []
-        self.state = []
-
-    def update_bet_from_inquire(self, line_string):
-        parameter = line_string.split(' ')
-        self.bet.append(int(parameter[3]))
-        self.state.append(parameter[4])
-
 # parse socket command_block
-def seat_parse(lines):
-    #reset card_index when new hand begin
+def init_player_seat(lines):
     global opponent_dic
     global is_game_over
     global num_player
-    global card_index
-    global cards
-    card_index = 0
-    cards = [None]*7
     opponent_dic = {}
     num_player = 0
 
@@ -63,7 +40,7 @@ def seat_parse(lines):
         parameter = line.split(' ')
         try:
             pid = parameter[-4]
-            if pid != my_pid:
+            if pid != client_pid:
                 num_player += 1
                 opponent_dic[pid] = Player()
         except:
@@ -71,22 +48,21 @@ def seat_parse(lines):
             print 'seat parse error'
 
 def card_parse(lines):
-    global cards
-    global card_index
-    global is_game_over
+    cards = []
 
     for line in lines:
         parameter = line.split(' ')
         try:
-            cards[card_index] = str(Card(parameter[0], parameter[1]))
-            card_index += 1
+            card_str = str(Card(parameter[0], parameter[1]))
+            cards.append(card_str)
         except:
+            global is_game_over
             is_game_over = True
             print 'card parse error'
 
-    if cards[6] is None and cards[2] is not None:
-        global hand_probability
-        hand_probability = holdem_calc.calc(cards)
+    if len(cards) == 1:
+        return card_str
+    return cards
 
 def oppo_parse(lines):
     global opponent_dic
@@ -96,7 +72,7 @@ def oppo_parse(lines):
         parameter = line.split(' ')
         pid = parameter[0]
         try:
-            if pid != my_pid:
+            if pid != client_pid:
                 opponent_dic[pid].update_bet_from_inquire(line)
         except:
             is_game_over = True
@@ -114,58 +90,64 @@ def creat_oppo_array():
     return oppobehave, opponum
 
 def parse_with_recv(recv):
-    global round_state
-
     command_block = re.finditer(r"(\w+)/ \n([\s\S]*?)/(\1) \n", recv)
 
     for block in command_block:
         command = block.group(1)
-        body = block.group(2)
+        body = block.group(2).splitlines()
 
         if command == 'inquire':
-            round_state += 1
-            oppo_parse(body.splitlines())
-            (oppobehave, opponum) = creat_oppo_array()
-            print ' oppobehave is '
-            print oppobehave
-            print opponum
-            action = ''
-            if cards[6]:
-                print 'river round , count is: %s', round_state
-                action = cards2.makeDecisionRiver(cards, round_state, oppobehave, opponum, num_player)
-            elif cards[5]:
-                print 'turn round , count is: %s', round_state
-                action = cards2.makeDecisionTurn(cards, round_state, hand_probability, oppobehave, opponum, num_player)
-            elif cards[2]:
-                print 'flop round , count is: %s', round_state
-                action = cards2.makeDecisionFlop(cards, round_state, hand_probability, oppobehave, opponum, num_player)
-            elif cards[0]:
-                print 'blind round , count is: %s', round_state
-                action = cards2.makeDecisionBlind(cards, round_state, oppobehave, opponum, num_player)
-
-            print 'send message to server: %s\n' % action
-            return action
-
-        round_state = 0
-
-        if command == 'seat':
-            seat_parse(body.splitlines())
-        elif command in ['hold', 'flop', 'turn', 'river']:
-            card_parse(body.splitlines())
+            # oppo_parse(body)
+            # (oppobehave, opponum) = creat_oppo_array()
+            return make_decision()
+        # elif command == 'showdown':
+        #     return 
+        elif command == 'seat':
+            init_player_seat(body)
+        elif command in ['hold','flop','turn','river']:
+            card_update(command, body)
 
     return None
 
+def card_update(command, body):
+    global board_state
+    board_state = command
+
+    global round_state
+    round_state = 0
+
+    global board_card
+    global probability
+    if command == 'hold':
+        global hand_card
+        hand_card = card_parse(body)
+    elif command == 'flop':
+        board_card = card_parse(body)
+        probability = card_probability.calc(hand_card, board_card)
+    elif command == 'turn':
+        board_card.append(card_parse(body))
+        probability = card_probability.calc(hand_card, board_card)
+    elif command == 'river':
+        board_card.append(card_parse(body))
+
+def make_decision():
+    global round_state
+    round_state += 1
+
+    action = 'check'
+    print 'send message to server: %s\n' % action
+    return action
+
 def run(argv):
+
+    global client_pid
 
     # parameter init
     server_ip = argv[0]
     server_port = int(argv[1])
     client_ip = argv[2]
     client_port = int(argv[3])
-    client_name = argv[4]
-
-    global my_pid
-    my_pid = client_name
+    client_pid = argv[4]
 
     # register to gameserver
     while True:
@@ -175,7 +157,7 @@ def run(argv):
             clientsocket.bind((client_ip, client_port))
             clientsocket.connect((server_ip, server_port))
             print 'connect to server success'
-            reg_message = 'reg: ' + client_name + ' ' + 'yutian' + ' \n'
+            reg_message = 'reg: ' + client_pid + ' ' + 'yutian' + ' \n'
             print 'send register message: ' + reg_message
             clientsocket.send(reg_message)
             break

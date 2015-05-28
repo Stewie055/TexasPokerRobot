@@ -16,7 +16,7 @@ from deuces import Deck
 #oppobehavenumriver[num_player][cardround]
 
 
-def  getOppoStyle(oppobehave,oppobehavenum,num_player):
+def getOppoStyle(oppobehave,oppobehavenum,num_player):
 	oppostyle=[None]*num_player
 	num_call=[None]*num_player
 	num_raise=[None]*num_player
@@ -40,34 +40,30 @@ def  getOppoStyle(oppobehave,oppobehavenum,num_player):
 			oppostyle[i] = 'weak'
 	return oppostyle
 
-
-
 def getCardPercentageRank(card,percentage):
 	try:
 		index1=percentage.index(max(percentage))
 		temp_percentage2=percentage
 		temp_percentage2.remove(max(percentage))
-		index2=temp_percentage2.index(max(temp_percentage2))
-		temp_percentage3=temp_percentage2
-		temp_percentage3.remove(max(temp_percentage2))
-		index3=temp_percentage3.index(max(temp_percentage3))
+		index2=percentage.index(max(temp_percentage2))
+
 
 	except:
 		"value is not in the list"
-	return index1,index2,index3
+	return index1,index2
 
 def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_player):
 	if cardround<=2:
 		if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-			return 'raise 200'
-		elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
 			return 'raise 100'
+		elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+			return 'call'
+		elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+			return 'call'
 		elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 			return  'call'
-		elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+		elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
 			return  'call'
-		elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-			return 'raise 200'
 		elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
 			return 'call'
 		elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
@@ -85,13 +81,13 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 		elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 			return 'call'
 		elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
+			return 'check'
 		elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
+			return 'check'
 		elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
+			return 'check'
 		elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
+			return 'check'
 		else:
 			return 'fold' 
 	elif cardround==3:
@@ -99,18 +95,18 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 		if oppostyleblind.count('aggresive')>=1 or oppostyleblind.count('attack')>=2:
 			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
 				return 'call'
-			elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+				return 'call'
+			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
 				return 'call'
 			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
-				return  'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'call'
+			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
+				return  'check'
 			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
 				return 'call'
 			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'call'	
+				return 'check'	
 			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'call'
 			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
@@ -118,7 +114,7 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'call'
 			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'check'
 			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
@@ -128,26 +124,26 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'check'
 			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'fold'
+				return 'check'
 			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'fold'
+				return 'check'
 			else:
 				return 'fold' 
 		elif oppostyleblind.count('attack')>=1:
 			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'raise 100'
-			elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+				return 'call'
+			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+				return 'call'
+			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
 				return 'call'
 			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
 				return  'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'raise 100'
 			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
 				return 'call'
 			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'call'	
+				return 'check'	
 			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'call'
 			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
@@ -156,31 +152,31 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 				return 'call'
 			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'call'
-			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'check'
-			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in   ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'check'
-			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+			elif card[0][0]in['8','7','6','5','4']  and card[1][0]in   ['8','7','6','5','4'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in   ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in   ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in   ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'check'
 			else:
 				return 'fold' 
 		else:
 			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'raise 200'
-			elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
 				return 'raise 100'
+			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+				return 'call'
+			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+				return 'call'
 			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
 				return  'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'raise 200'
 			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
 				return 'call'
 			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
@@ -196,73 +192,74 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 				return 'call'
 			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
+				return 'check'
 			else:
 				return 'fold' 
 	else:
 		return 'call'
 
-def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player):
-	(index1,index2,index3 )= getCardPercentageRank(card,percentage)
+def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2):
+	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
-	rank2 = getRank2(card)
 	if cardround==1:
 			if rank2<=322 :
 				return 'raise 500'
 			elif rank2<=1599 and rank2>322:
-				return 'raise 300'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
 				return 'raise 200'
+			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+				return 'raise 100'
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
 				return 'raise 100'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3:
-				return 'raise 100'
+				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'check'					
+				return 'check'		
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'			
 			else:
 				return 'fold'
 	elif cardround==2:
 			if rank2<=322 :
 				return 'raise 400'
 			elif rank2<=1599 and rank2>322:
-				return 'raise 300'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
 				return 'raise 200'
+			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+				return 'raise 100'
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
 				return 'raise 100'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'raise 100'
+				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
@@ -270,6 +267,8 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'fold'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 	elif cardround<=5:
@@ -290,26 +289,28 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+				return 'check'
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
-				return 'call'
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'fold'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 		elif oppostyleflop.count('aggresive')==0 and  oppostyleflop.count('attack')>=1:
 			if rank2<=322 :
-				return 'raise 300'
-			elif rank2<=1599 and rank2>322:
 				return 'raise 200'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+			elif rank2<=1599 and rank2>322:
 				return 'raise 100'
+			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
 				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
@@ -320,16 +321,18 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
+				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'check'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
@@ -342,22 +345,24 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
 				return 'raise 100'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'raise 100'
+				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
+				return 'check'
+			elif rank2>=6185 and index1>=4  and percentage[index1]>0.3:
 				return 'call'
 			else:
 				return 'fold'
@@ -378,15 +383,17 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'raise 100'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
+				return 'call'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
 				return 'call'
 			else:
 				return 'fold'
@@ -401,25 +408,27 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
 				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'call'
+				return 'check'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
 				return 'call'
 			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
+				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+				return 'check'
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'check'	
+				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'fold'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')>=1:
@@ -438,17 +447,19 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+				return 'check'
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
-				return 'call'
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
+				return 'check'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'check'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
@@ -468,15 +479,17 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
+				return 'call'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
 				return 'call'
 			else:
 				return 'fold'
@@ -497,9 +510,9 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'raise 100'
 			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
 				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
 				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 				return 'call'	
@@ -507,13 +520,13 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 				return 'call'
 			elif rank2<6185 and rank2>=2467 and del_index<=0:
 				return 'call'
+			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+				return 'call'
 			else:
 				return 'fold'
 
-def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player):
-		rank3 = getRank3(card)
-		rank4 = getRank4(card)
-		rankboard = getRankBoard(card)
+def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player,rank3,rank4,rankboard):
+
 		if cardround==1:
 			if rank4<rank3 and rank4<rankboard:	
 				if rank4<=166:
@@ -530,7 +543,7 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 					return 'fold'
 			elif rank4==rank3 and rank4<rankboard:
 				if rank4<=166:
-					return 'all_in'
+					return 'raise 500'
 				elif rank4<=322 and rank4>166:
 					return 'raise 300'
 				elif rank4<=1599 and rank4>322:
@@ -604,7 +617,7 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 				if rank4<rank3 and rank4<rankboard:	
 					if rank4<=322:
 						return 'raise 200'
-					elif rank4 <=1609:
+					elif rank4 <=1599:
 						return 'raise 100'
 					elif rank4 <=2467:
 						return 'call'
@@ -613,7 +626,7 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 				elif rank4==rank3 and rank4<rankboard:
 					if rank4<=322:
 						return 'raise 100'
-					elif rank4<=2467:
+					elif rank4<=1609:
 						return 'call'
 					elif rank4 <=3325:
 						return 'check'
@@ -655,10 +668,9 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 			else:
 				return 'fold'
 
-def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,num_player):
-		rank2 = getRank2(card)
-		rank3 = getRank3(card)
-		(index1,index2,index3 )= getCardPercentageRank(card,percentage)
+def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,num_player,rank2,rank3):
+
+		(index1,index2)= getCardPercentageRank(card,percentage)
 		del_index = index2-index1
 		if cardround==1:
 			if rank3<rank2:
@@ -688,8 +700,138 @@ def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,
 					return 'call'
 				elif rank2<6185 and rank2>=2467 and del_index<=0:
 					return 'call'
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
+					return 'call'
 				else:
 					return 'fold'
+			else:
+				if rank2<=322 :
+					return 'raise 100'
+				elif rank2<=1599 and rank2>322:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
+					return 'call'
+				else:
+					return 'fold'
+		elif cardround>1 and rank3<=166:
+			return 'call'
+		elif cardround>1 and rank3>166:
+			oppostyleturn=getOppoStyle(oppobehaveturn,oppobehavenumturn,num_player)
+			if oppostyleturn.count('aggresive')>=1:
+				if rank2<=322 :
+					return 'raise 100'
+				elif rank2<=1599 and rank2>322:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
+					return 'call'
+				else:
+					return 'fold'
+			elif oppostyleturn.count('attack')>=2:
+				if rank2<=322 :
+					return 'raise 100'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
+					return 'check'
+				else:
+					return 'fold'
+			elif oppostyleturn.count('robust')>=3:
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
+					return 'call'
+				else:
+					return 'fold'	
 			else:
 				if rank2<=322 :
 					return 'raise 200'
@@ -710,117 +852,15 @@ def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,
 				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]>0.3:
 					return 'call'	
 				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=5 and percentage[index1]<=0.3:
-					return 'call'
+					return 'check'
 				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
 					return 'call'	
 				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-					return 'call'
+					return 'check'
 				elif rank2<6185 and rank2>=2467 and del_index<=0:
 					return 'call'
-				else:
-					return 'fold'
-		elif cardround>1 and rank3<=166:
-			return 'call'
-		elif cardround>1 and rank3>166:
-			oppostyleturn=getOppoStyle(oppobehaveturn,oppobehavenumturn,num_player)
-			if oppostyleturn.count('aggresive')>=1:
-				if rank2<=322 :
+				elif rank2>=6185 and index1>=5 and percentage[index1]>0.18:
 					return 'call'
-				elif rank2<=1599 and rank2>322:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 :
-					return 'check'
-				else:
-					return 'fold'
-			elif oppostyleturn.count('attack')>=2:
-				if rank2<=322 :
-					return 'call'
-				elif rank2<=1599 and rank2>322:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 :
-					return 'check'
-				else:
-					return 'fold'
-			elif oppostyleturn.count('robust')>=3:
-				if rank2<=322 :
-					return 'call'
-				elif rank2<=1599 and rank2>322:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]<=0.3:
-					return 'check'
-				elif rank2<6185 and rank2>=2467 :
-					return 'check'
-				else:
-					return 'fold'		
-			else:
-				if rank2<=322 :
-					return 'call'
-				elif rank2<=1599 and rank2>322:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-					return 'call'
-				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=5 and percentage[index1]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]>0.3:
-					return 'call'	
-				elif rank2<6185 and rank2>=2467 and index1>=3 and del_index>0 and percentage[index2]<=0.3:
-					return 'call'
-				elif rank2<6185 and rank2>=2467 :
-					return 'check'
 				else:
 					return 'fold'		
 
@@ -844,6 +884,7 @@ def getRank4(card):
 	board=[Card.new(card[2]),Card.new(card[3]),Card.new(card[4]),Card.new(card[5]),Card.new(card[6])]
 	rank4=evaluator.evaluate(board,hand)
 	return rank4
+
 def getRankBoard(card):
 	board1=[Card.new(card[2]),Card.new(card[3])]
 	evaluator=Evaluator()

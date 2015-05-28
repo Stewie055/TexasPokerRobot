@@ -4,15 +4,11 @@ sys.path.insert(0, "../libs/holdem_calc/")
 import holdem_argparser
 import holdem_functions
 
-def calc(cards):
+def calc(hold_card, board_card=None):
 
     # generate parameter
-    hole_cards = holdem_argparser.parse_hole_cards(cards[:2])
-    given_board = None
-    if cards[5]:
-        given_board = holdem_argparser.parse_cards(cards[2:6])
-    elif cards[2]:
-        given_board = holdem_argparser.parse_cards(cards[2:5])
+    hole_cards = holdem_argparser.parse_hole_cards(hold_card)
+    given_board = holdem_argparser.parse_cards(board_card)
 
     if given_board:
         all_cards = list(hole_cards)
