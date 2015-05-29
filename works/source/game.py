@@ -37,19 +37,29 @@ def update_player_from_seat(lines):
     global opponent_dic
     global is_game_over
     global num_player
+    global my_money
+    global all_money
     num_player = 0
+    my_money = [0]*2
+    all_money = [0]*2
 
     for line in lines:
         parameter = line.split(' ')
         try:
             pid = parameter[-4]
+            jetton = int(parameter[-3])
+            money = int(parameter[-2])
             if pid != client_pid:
                 num_player += 1
+                all_money[0] += jetton
+                all_money[1] += money
                 if pid in opponent_dic:
                     opponent_dic[pid].reset_bet_and_action()
                 else:
-                    print 'Player() new'
                     opponent_dic[pid] = Player()
+            else:
+                my_money[0] = jetton
+                my_money[0] = money
         except:
             is_game_over = True
             print 'seat parse error'
@@ -121,8 +131,6 @@ def card_update(command, body):
     elif command == 'river':
         board_cards.append(card_parse(body))
 
-def money_update(lines)
-
 def creat_oppo_array():
     oppobehave = []
     opponum = []
@@ -160,28 +168,28 @@ def make_decision():
     if board_state == 'hold':
         card = hand_cards + [None]*7
         try:
-            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank)
+            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank, my_money, all_money)
         except:
             print 'blind decision error'
             action = 'check'
     elif board_state == 'flop':
         card = hand_cards + board_cards + [None]*2
         try:
-            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
         except:
             print 'flop decision error'
             action = 'check'
     elif board_state == 'turn':
         card = hand_cards + board_cards + [None]
         try:
-            action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank)
+            action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
         except:
             print 'turn decision error'
             action = 'check'
     elif board_state == 'river':
         card = hand_cards + board_cards
         try:
-            action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank)
+            action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
         except:
             print 'river decision error'
             action = 'check'

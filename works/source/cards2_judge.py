@@ -203,7 +203,6 @@ def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num
 		return high_t1
 	else:	
 		threat=getPlayerThreat(num_player,playermovement,playerrank)
-		global rank3 
 		rank3 = getRank3(card)
 		print rank3
 
