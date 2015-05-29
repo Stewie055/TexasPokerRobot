@@ -29,6 +29,9 @@ def main():
 	oppobehave=[['call','check','call','call','raise','call'],['call','check','call','call','raise','call'],['call','check','call','call','raise','call']]
 	oppobehavenum=[[100,0,200,200,300,300],[100,0,200,200,300,300],[100,0,200,200,300,300]]
 	playerrank=[[3325 for i in range(50)],[4700 for i in range(50)],[2467 for i in range(50)]]
+	
+
+
 	t1=time.clock()
 
 	rank_temp=cn.getRank4(card)
@@ -84,20 +87,27 @@ def getRank(num_player,card_player,board_player,t):
 	#print playerrank
 	return rank
 '''
+
+	#my_money[2000,8000]
+	#all_money[14000,56000]
+def calc_money(my_money,all_money):
+
+	div_money=float(my_money[0])/sum(all_money)
+	return div_money
 #根据对手历史各轮的下注风格，推算对手的牌风，即下注威胁值
 def getPlayerThreat(num_player,playermovement,playerrank):
 	threat=[None]*num_player
 	for i in range(num_player):
 		if sum(playermovement[i])==0:
 			threat[i]=1
+		elif len(playerrank[i])==0:
+			threat[i]=2
 		else:
 			ave_move = float(playermovement[i][0]+2*playermovement[i][1]+3*playermovement[i][2]+4*playermovement[i][3]+5*playermovement[i][4])\
 				/(playermovement[i][0]+playermovement[i][1]+playermovement[i][2]+playermovement[i][3]+playermovement[i][4])
 			a=7461*len(playerrank[i])-sum(playerrank[i])
 			b=len(playerrank[i])
-			if b == 0:
-			    threat[i] = 2
-			    continue
+			print "a,b is : %s"% a,b,ave_move
 			ave_rank = float(a)/b
 			temp=float(ave_rank/ave_move)
 			if  temp<750:
@@ -112,76 +122,145 @@ def getPlayerThreat(num_player,playermovement,playerrank):
 	return threat
 
 #盲注阶段最终决策函数
-def makeDecisionBlindFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,card_player,playerrank):
-
-	threat=getPlayerThreat(num_player,playermovement,playerrank)
-	if max(threat)==3:
-		b=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
-		print "b1=%s"%b
-	elif max(threat)==2:
-		b=cn.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
-		print "b2=%s"%b
+def makeDecisionBlindFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,card_player,playerrank,my_money,all_money):
+	div_money=calc_money(my_money,all_money)
+	if div_money<0.1:
+		print div_money
+		low_b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
+		return low_b1
+	elif div_money>0.7:
+		print div_money
+		high_b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
+		return high_b1
 	else:
-		b = cs.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
-		print "b3=%s"%b
-	return b
+		print div_money		
+		threat=getPlayerThreat(num_player,playermovement,playerrank)
+		if max(threat)==3:
+			b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
+			print "b1=%s"%b1
+			return b1
+		elif max(threat)==2:
+			b2=cn.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
+			print "b2=%s"%b2
+			return b2
+		else:
+			b3=cs.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player)
+			print "b3=%s"%b3
+			return b3
+
 
 #公共牌阶段最终决策函数
-def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank):
+def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money):
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
 	global rank2 
 	rank2 = getRank2(card)
+	print rank2		
 
-	if max(threat)==3:
-		f=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
-		print "f1=%s"%f
-
-	elif max(threat)==2:
-		f=cn.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
-		print "f2=%s"%f
-
+	div_money=calc_money(my_money,all_money)
+	if div_money<0.1:
+		print div_money
+		low_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
+		return low_f1
+	elif div_money>0.7:
+		print div_money
+		high_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
+		return high_f1
 	else:
-		f=cs.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
-		print "f3=%s"%f
-	return f
+
+		if max(threat)==3:
+			f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
+			print "f1=%s"%f1
+			return f1
+
+
+		elif max(threat)==2:
+			f2=cn.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
+			print "f2=%s"%f2
+			return f2
+
+
+		else:
+			f3=cs.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
+			print "f3=%s"%f3
+			return f3
+
+
 
 #转牌阶段最终决策函数
-def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank):
+def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money):
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
 	global rank3 
 	rank3 = getRank3(card)
-	if max(threat)==3:
-		t  = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
-		print "t1=%s"%t 
+	print rank3	
+	div_money=calc_money(my_money,all_money)
+	if div_money<0.1:
+		print div_money
+		low_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+		return low_t1
+	elif div_money>0.7:
+		print div_money
+		high_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+		return high_t1
+	else:	
+		threat=getPlayerThreat(num_player,playermovement,playerrank)
+		global rank3 
+		rank3 = getRank3(card)
+		print rank3
 
-	elif max(threat)==2:
-		t  = cn.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
-		print "t2=%s"%t 
+		if max(threat)==3:
+			t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+			print "t1=%s"%t1
+			return t1
 
-	else:
-		t  = cs.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
-		print "t3=%s"%t 
-	return t
+
+		elif max(threat)==2:
+			t2 = cn.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+			print "t2=%s"%t2
+			return t2
+
+
+		else:
+			t3 = cs.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+			print "t3=%s"%t3
+			return t3
+
 
 #河牌阶段最终决策函数
-def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,playerrank):
+def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money):
 	global rank4
 	rank4 = getRank4(card)
 	rankboard = getRankBoard(card)
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
-
-	if max(threat)==3:
-		r  = cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
-		print "r1=%s"%r 
-
-	elif max(threat)==2:
-		r  = cn.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
-		print "r2=%s"%r 
-
+	print rank4	
+	div_money=calc_money(my_money,all_money)
+	if div_money<0.1:
+		print div_money
+		low_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+		return low_r1
+	elif div_money>0.7:
+		print div_money
+		high_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+		return high_r1
 	else:
-		r  = cs.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
-		print "r3=%s"%r 
-	return r
+
+
+		if max(threat)==3:
+			r1 = cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+			print "r1=%s"%r1
+			return r1
+
+
+		elif max(threat)==2:
+			r2 = cn.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+			print "r2=%s"%r2
+			return r2
+
+
+		else:
+			r3 = cs.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+			print "r3=%s"%r3
+			return r3
+
 
 #计算公共牌阶段牌力
 def getRank2(card):

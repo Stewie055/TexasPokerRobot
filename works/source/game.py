@@ -9,7 +9,7 @@ import cards2_judge as decision
 from card import Card
 from player import Player
 
-# 0,1-hands 2,3,4-flop 5-turn 6-river
+# card parameter
 hand_cards = [None]*2
 board_cards = []
 probability = [None]*10
@@ -21,6 +21,10 @@ round_state = 0
 # key is player's PID
 num_player = 0
 opponent_dic = {}
+
+# money and bet information
+my_money = [0]*2
+all_money = [0]*2
 
 # my PID
 client_pid = ''
@@ -116,6 +120,8 @@ def card_update(command, body):
         probability = card_probability.calc(hand_cards, board_cards)
     elif command == 'river':
         board_cards.append(card_parse(body))
+
+def money_update(lines)
 
 def creat_oppo_array():
     oppobehave = []
