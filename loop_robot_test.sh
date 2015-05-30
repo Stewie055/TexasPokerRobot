@@ -1,28 +1,45 @@
 #!/usr/bin/env bash
 # Check if gameserver is running
-count=10
-for i in 1 2 3 .. count
+count=2
+cd ~/
+rm -rf result
+mkdir result
+touch ./result/result.txt
+
+appendResult () {
+    cd ~/
+    result=`sed -e '$!d' ./run_area/server/data.csv`
+    echo $result
+    echo "$result\n" >> ./result/result.txt
+    cd -
+}
+
+for i in 1 2 3 4 5 6
 do
-    cd
-    cd game/
+    cd ~/game/
     # kill all process about game
-    ps t | grep 127.0.0.1 | cut -c 1-5 | xargs kill -9
-    sleep 2
-    ./RobotTest.sh > /dev/null
+    ps t | grep python | cut -c 1-5 | xargs kill -9 >/dev/null 2>&1
+    ./RobotTest.sh
+    echo "running"
     while true
     do
         if pgrep "gameserver" > /dev/null
         then
-            echo "still running"
-            sleep 30
+            sleep 10
         else
-            echo "game over"
+            echo "-----Over-----"
             break
         fi
     done
 
-    cd ../run_area/server
-    result=`sed -e '$!d' data.csv`
-    cd ../..
-    echo "$result\n" >> result.txt
+    echo "generate result to ~/result"
+    cd ~/result/
+    cp ~/run_area/works/target/my.txt client_$i.txt
+    cp ~/run_area/server/log.txt server_$i.txt
+    cp ~/run_area/server/replay.txt replay_$i.txt
+
+    appendResult
+    echo "waiting for socket port release"
+    sleep 60
 done
+
