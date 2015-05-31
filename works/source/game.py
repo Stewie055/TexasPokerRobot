@@ -32,6 +32,9 @@ client_pid = ''
 # game over flag
 is_game_over = False
 
+# blind flag
+blind_flag = 0
+
 # parse socket command_block
 def update_player_from_seat(lines):
     global opponent_dic
@@ -39,6 +42,7 @@ def update_player_from_seat(lines):
     global num_player
     global my_money
     global all_money
+    global blind_flag
     num_player = 0
     my_money = [0]*2
     all_money = [0]*2
@@ -58,8 +62,10 @@ def update_player_from_seat(lines):
                 else:
                     opponent_dic[pid] = Player()
             else:
+                if parameter[1] == 'blind':
+                    blind_flag = 1
                 my_money[0] = jetton
-                my_money[0] = money
+                my_money[1] = money
         except:
             is_game_over = True
             print 'seat parse error'
