@@ -102,7 +102,7 @@ def update_player_from_inquire(lines):
                 opponent_dic[pid].update_from_inquire(line)
             else:
                 if len(my_bet_history) > 0:
-                    delta = int(parameter[3]) - my_bet_history[-1]
+                    delta = int(parameter[3]) - sum(my_bet_history)
                     my_bet_history.append(delta)
                 else:
                     my_bet_history.append(int(parameter[3]))
@@ -185,29 +185,34 @@ def make_decision():
     if board_state == 'hold':
         card = hand_cards + [None]*7
         try:
-            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank, my_money, all_money, blind_flag)
+            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank, my_money, all_money,blind_flag)
         except:
             print 'blind decision error'
             action = 'check'
     elif board_state == 'flop':
         card = hand_cards + board_cards + [None]*2
         try:
-            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money, blind_flag)
+            action = decision.makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history)
         except:
+            print 'my_bet_history',my_bet_history
             print 'flop decision error'
             action = 'check'
     elif board_state == 'turn':
         card = hand_cards + board_cards + [None]
         try:
-            action = decision.makeDecisionTurnFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
+            action = decision.makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history)
         except:
+            print 'my_bet_history',my_bet_history
+
             print 'turn decision error'
             action = 'check'
     elif board_state == 'river':
         card = hand_cards + board_cards
         try:
-            action = decision.makeDecisionRiverFinal(card, round_state, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
+            action =decision.makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history)
         except:
+            print 'my_bet_history',my_bet_history
+
             print 'river decision error'
             action = 'check'
 
