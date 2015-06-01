@@ -220,13 +220,11 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 		else:
 			return 'check' 
 
-def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2,blind_flag):
+def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2):
 	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
-	if  rank2>3325:
-		return 'fold'
-	else:
-		if cardround==1:
+
+	if cardround==1:
 				if rank2<=322 :
 					return 'raise 500'
 				elif rank2<=1599 and rank2>322:
@@ -257,7 +255,7 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'call'			
 				else:
 					return 'fold'
-		elif cardround==2:
+	elif cardround==2:
 				if rank2<=322 :
 					return 'raise 400'
 				elif rank2<=1599 and rank2>322:
@@ -288,7 +286,7 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'call'
 				else:
 					return 'fold'
-		elif cardround<=5:
+	elif cardround<=5:
 			oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
 			if oppostyleflop.count('aggresive')>=1:
 				if rank2<=322 :
@@ -414,8 +412,7 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'call'
 				else:
 					return 'fold'
-
-		elif cardround>5:
+	elif cardround>5:
 			oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
 			if oppostyleflop.count('aggresive')>=1:
 				if rank2<=322 :

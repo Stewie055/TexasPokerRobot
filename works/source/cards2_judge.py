@@ -24,12 +24,14 @@ def main():
 	board_player=[['5d','8c','Ac','Jc','4d']for i in range(50)]
 	playermovement=[[30,0,30,10,0],[0,0,30,70,0],[20,20,20,20,20]]
 	percentage=[0,0.2,0.15,0.4,0,0.2,0,0.05,0,0]
-	#playerrank=[[3731,3731,3731],[2487,2487,2487],[4974,4974,4974]]
+		#playerrank=[[3731,3731,3731],[2487,2487,2487],[4974,4974,4974]]
 	cardround=1
 	oppobehave=[['call','check','call','call','raise','call'],['call','check','call','call','raise','call'],['call','check','call','call','raise','call']]
 	oppobehavenum=[[100,0,200,200,300,300],[100,0,200,200,300,300],[100,0,200,200,300,300]]
 	playerrank=[[3325 for i in range(50)],[4700 for i in range(50)],[2467 for i in range(50)]]
-	
+	my_money=[2000,8000]
+	all_money=[14000,56000]
+	my_bet_history=[100,100,0]
 
 
 	t1=time.clock()
@@ -126,18 +128,17 @@ def getPlayerThreat(num_player,playermovement,playerrank):
 def makeDecisionBlindFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,card_player,playerrank,my_money,all_money,blind_flag):
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
+	threat=getPlayerThreat(num_player,playermovement,playerrank)
 
 	if div_money<0.01:
 		low_b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player,blind_flag)
-		print"low_b1=%s"%low_b1
+		print 'ow_b1=%s'%low_b1
 		return low_b1
 	elif div_money>0.7:
 		high_b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player,blind_flag)
-		print"high_b1=%s"%high_b1
+		print 'high_b1=%s'%high_b1
 		return high_b1
 	else:
-		print div_money		
-		threat=getPlayerThreat(num_player,playermovement,playerrank)
 		if max(threat)==3:
 			b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player,blind_flag)
 			print "b1=%s"%b1
@@ -153,7 +154,9 @@ def makeDecisionBlindFinal(card,cardround,oppobehave,oppobehavenum,num_player,pl
 
 
 #公共牌阶段最终决策函数
-def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,blind_flag):
+
+
+def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history):
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
 	global rank2 
 	rank2 = getRank2(card)
@@ -161,63 +164,57 @@ def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num
 	div_money=calc_money(my_money,all_money)
 
 	print my_money,all_money,div_money
-
+	print 'my_bet_history=%s'%my_bet_history
 	if div_money<0.01:
-		low_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,blind_flag)
+		low_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,my_bet_history)
 		print"low_f1=%s"%low_f1
 		return low_f1
 	elif div_money>0.7:
-		high_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,blind_flag)
+		high_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,my_bet_history)
 		print"high_f1=%s"%high_f1
 		return high_f1
 	else:
 		if max(threat)==3:
-			f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,blind_flag)
+			f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,my_bet_history)
 			print "f1=%s"%f1
 			return f1
-
-
 		elif max(threat)==2:
-			f2=cn.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,blind_flag)
+			f2=cn.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,my_bet_history)
 			print "f2=%s"%f2
 			return f2
 		else:
-			f3=cs.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,blind_flag)
+			f3=cs.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2)
 			print "f3=%s"%f3
 			return f3
 
 
-
 #转牌阶段最终决策函数
-def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money):
+def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history):
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
 	global rank3 
 	rank3 = getRank3(card)
 	print rank3	
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
+	print 'my_bet_history=%s'%my_bet_history
 
 	if div_money<0.01:
-		low_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+		low_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3,my_bet_history)
 		print"low_t1=%s"%low_t1		
 		return low_t1
 	elif div_money>0.7:
-		high_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+		high_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3,my_bet_history)
 		print"high_t1=%s"%high_t1				
 		return high_t1
 	else:	
-		threat=getPlayerThreat(num_player,playermovement,playerrank)
-		rank3 = getRank3(card)
-		print rank3
 
 		if max(threat)==3:
-			t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+			t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3,my_bet_history)
 			print "t1=%s"%t1
 			return t1
 
-
 		elif max(threat)==2:
-			t2 = cn.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3)
+			t2 = cn.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3,my_bet_history)
 			print "t2=%s"%t2
 			return t2
 
@@ -229,7 +226,7 @@ def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num
 
 
 #河牌阶段最终决策函数
-def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money):
+def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history):
 	global rank4
 	rank4 = getRank4(card)
 	rankboard = getRankBoard(card)
@@ -237,14 +234,15 @@ def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,pl
 	print rank4	
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
+	print "my_bet_history=%s"%my_bet_history
 
 	if div_money<0.01:
-		low_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+		low_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard,my_bet_history)
 		print "low_r1=%s"%low_r1
 	
 		return low_r1
 	elif div_money>0.7:
-		high_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+		high_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard,my_bet_history)
 		print "high_r1=%s"%high_r1
 		
 		return high_r1
@@ -252,13 +250,13 @@ def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,pl
 
 
 		if max(threat)==3:
-			r1 = cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+			r1 = cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard,my_bet_history)
 			print "r1=%s"%r1
 			return r1
 
 
 		elif max(threat)==2:
-			r2 = cn.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard)
+			r2 = cn.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard,my_bet_history)
 			print "r2=%s"%r2
 			return r2
 
@@ -297,3 +295,4 @@ def getRankBoard(card):
 	board2=[Card.new(card[4]),Card.new(card[5]),Card.new(card[6])]
 	rankboard=evaluator.evaluate(board1,board2)
 	return rankboard
+
