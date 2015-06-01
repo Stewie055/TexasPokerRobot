@@ -52,478 +52,493 @@ def getCardPercentageRank(card,percentage):
 		"value is not in the list"
 	return index1,index2
 
-def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_player):
-	if cardround<=2:
-		if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-			return 'raise 100'
-		elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_player,blind_flag):
+	if blind_flag==1:	
+		if cardround<=2:
+			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+				return 'raise 100'
+			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+				return 'call'
+			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+				return 'call'
+			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+				return  'call'
+			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
+				return  'call'
+			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+				return 'call'
+			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+				return 'call'	
+			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'call'
+			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+				return 'check'
+			else:
+				return 'fold' 
+		elif cardround==3:
+			oppostyleblind = getOppoStyle(oppobehaveblind,oppobehavenumblind,num_player)
+			if oppostyleblind.count('aggresive')>=1 or oppostyleblind.count('attack')>=2:
+				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+					return 'call'
+				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+					return 'call'
+				elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+					return 'call'
+				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+					return  'call'
+				elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
+					return  'check'
+				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+					return 'call'
+				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+					return 'check'	
+				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				else:
+					return 'fold' 
+			elif oppostyleblind.count('attack')>=1:
+				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+					return 'call'
+				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+					return 'call'
+				elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+					return 'call'
+				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+					return  'call'
+				elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
+					return  'call'
+				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+					return 'call'
+				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+					return 'check'	
+				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in   ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in['8','7','6','5','4']  and card[1][0]in   ['8','7','6','5','4'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in   ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in   ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in   ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				else:
+					return 'fold' 
+			else:
+				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+					return 'raise 100'
+				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+					return 'call'
+				elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+					return 'call'
+				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+					return  'call'
+				elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
+					return  'call'
+				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+					return 'call'
+				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+					return 'call'	
+				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'call'
+				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+					return 'check'
+				else:
+					return 'fold' 
+		else:
 			return 'call'
-		elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
+	else:
+		if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+			return 'call'
+		elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in ['A','K','Q','J','T'] and card[0][1]==card[1][1]:#big flush
+			return 'call'
+		elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
 			return 'call'
 		elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 			return  'call'
-		elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
-			return  'call'
-		elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-			return 'call'
-		elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-			return 'call'	
-		elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'call'
-		elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'check'
-		elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'check'
-		elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'check'
-		elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-			return 'check'
 		else:
-			return 'fold' 
-	elif cardround==3:
-		oppostyleblind = getOppoStyle(oppobehaveblind,oppobehavenumblind,num_player)
-		if oppostyleblind.count('aggresive')>=1 or oppostyleblind.count('attack')>=2:
-			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'call'
-			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
-				return 'call'
-			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
-				return  'check'
-			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'check'	
-			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			else:
-				return 'fold' 
-		elif oppostyleblind.count('attack')>=1:
-			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'call'
-			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
-				return 'call'
-			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
-				return  'call'
-			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'check'	
-			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in   ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in['8','7','6','5','4']  and card[1][0]in   ['8','7','6','5','4'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in   ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in   ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in   ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			else:
-				return 'fold' 
-		else:
-			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'raise 100'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'call'
-			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
-				return 'call'
-			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
-				return  'call'
-			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'call'	
-			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'call'
-			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			else:
-				return 'fold' 
-	else:
-		return 'call'
+			return 'check' 
 
-def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2):
+def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2,blind_flag):
 	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
-	if cardround==1:
-			if rank2<=322 :
-				return 'raise 500'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 200'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'check'		
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'			
+	if rank2>3325:
+		return 'fold'
+	else:
+		if cardround==1:
+				if rank2<=322 :
+					return 'raise 500'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 200'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'raise 100'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'check'		
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'			
+				else:
+					return 'fold'
+		elif cardround==2:
+				if rank2<=322 :
+					return 'raise 400'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 200'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'raise 100'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'fold'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
+		elif cardround<=5:
+			oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
+			if oppostyleflop.count('aggresive')>=1:
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'fold'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
+			elif oppostyleflop.count('aggresive')==0 and  oppostyleflop.count('attack')>=1:
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'check'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
+			elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
+				if rank2<=322 :
+					return 'raise 300'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 200'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'check'
+				elif rank2>=6185 and index1>=4  and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
 			else:
-				return 'fold'
-	elif cardround==2:
-			if rank2<=322 :
-				return 'raise 400'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 200'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'fold'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-	elif cardround<=5:
-		oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
-		if oppostyleflop.count('aggresive')>=1:
-			if rank2<=322 :
-				return 'raise 200'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'fold'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-		elif oppostyleflop.count('aggresive')==0 and  oppostyleflop.count('attack')>=1:
-			if rank2<=322 :
-				return 'raise 200'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'check'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
-			if rank2<=322 :
-				return 'raise 300'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 200'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'check'
-			elif rank2>=6185 and index1>=4  and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-		else:
-			if rank2<=322 :
-				return 'raise 200'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'raise 100'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'raise 100'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'raise 100'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'call'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'raise 100'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
 
-	elif cardround>5:
-		oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
-		if oppostyleflop.count('aggresive')>=1:
-			if rank2<=322 :
-				return 'raise 100'
-			elif rank2<=1599 and rank2>322:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'check'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'fold'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
+		elif cardround>5:
+			oppostyleflop = getOppoStyle(oppobehaveflop,oppobehavenumflop,num_player)
+			if oppostyleflop.count('aggresive')>=1:
+				if rank2<=322 :
+					return 'raise 100'
+				elif rank2<=1599 and rank2>322:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'check'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'fold'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
+			elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')>=1:
+				if rank2<=322 :
+					return 'raise 100'
+				elif rank2<=1599 and rank2>322:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'check'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'check'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
+			elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'call'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
 			else:
-				return 'fold'
-		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')>=1:
-			if rank2<=322 :
-				return 'raise 100'
-			elif rank2<=1599 and rank2>322:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'check'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'check'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-		elif oppostyleflop.count('aggresive')==0 and oppostyleflop.count('attack')==0 and  oppostyleflop.count('robust')>=1:
-			if rank2<=322 :
-				return 'raise 200'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'call'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'call'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
-		else:
-			if rank2<=322 :
-				return 'raise 200'
-			elif rank2<=1599 and rank2>322:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
-				return 'raise 100'
-			elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
-				return 'raise 100'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
-				return 'raise 100'
-			elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
-				return 'call'	
-			elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
-				return 'call'
-			elif rank2<6185 and rank2>=2467 and del_index<=0:
-				return 'call'
-			elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
-				return 'call'
-			else:
-				return 'fold'
+				if rank2<=322 :
+					return 'raise 200'
+				elif rank2<=1599 and rank2>322:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]>=0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index>0 and percentage[index2]<0.3:
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]>0.3 :
+					return 'raise 100'
+				elif rank2<=2467 and rank2>1599 and del_index<=0 and percentage[index1]<=0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]>0.3:
+					return 'raise 100'
+				elif rank2<6185 and rank2>=2467 and del_index>0 and percentage[index2]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=4 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]>0.3:
+					return 'call'	
+				elif rank2<6185 and rank2>=2467 and del_index<=0 and index1>=3 and percentage[index1]<=0.3:
+					return 'call'
+				elif rank2<6185 and rank2>=2467 and del_index<=0:
+					return 'call'
+				elif rank2>=6185 and index1>=4 and percentage[index1]>0.3:
+					return 'call'
+				else:
+					return 'fold'
 
 def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player,rank3,rank4,rankboard):
 

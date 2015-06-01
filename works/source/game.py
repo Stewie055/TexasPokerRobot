@@ -64,6 +64,8 @@ def update_player_from_seat(lines):
             else:
                 if parameter[1] == 'blind':
                     blind_flag = 1
+                else:
+                    blind_flag = 0
                 my_money[0] = jetton
                 my_money[1] = money
         except:
@@ -174,14 +176,14 @@ def make_decision():
     if board_state == 'hold':
         card = hand_cards + [None]*7
         try:
-            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank, my_money, all_money)
+            action = decision.makeDecisionBlindFinal(card, round_state, oppobehave, opponum, num_player, playermovement, card_player, playerrank, my_money, all_money, blind_flag)
         except:
             print 'blind decision error'
             action = 'check'
     elif board_state == 'flop':
         card = hand_cards + board_cards + [None]*2
         try:
-            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money)
+            action = decision.makeDecisionFlopFinal(card, round_state, probability, oppobehave, opponum, num_player, playermovement, playerrank, my_money, all_money, blind_flag)
         except:
             print 'flop decision error'
             action = 'check'
