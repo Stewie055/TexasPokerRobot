@@ -101,7 +101,7 @@ def update_player_from_inquire(lines):
             if pid != client_pid:
                 opponent_dic[pid].update_from_inquire(line)
             else:
-                my_bet_history.append(parameter[3])
+                my_bet_history.append(int(parameter[3]))
         except:
             is_game_over = True
             print 'inquire parse error'
