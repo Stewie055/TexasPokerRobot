@@ -25,6 +25,7 @@ opponent_dic = {}
 # money and bet information
 my_money = [0]*2
 all_money = [0]*2
+my_bet_history = []
 
 # my PID
 client_pid = ''
@@ -43,6 +44,8 @@ def update_player_from_seat(lines):
     global my_money
     global all_money
     global blind_flag
+    global my_bet_history
+    my_bet_history = []
     num_player = 0
     my_money = [0]*2
     all_money = [0]*2
@@ -97,6 +100,8 @@ def update_player_from_inquire(lines):
         try:
             if pid != client_pid:
                 opponent_dic[pid].update_from_inquire(line)
+            else:
+                my_bet_history.append(parameter[3])
         except:
             is_game_over = True
             print 'inquire parse error'
