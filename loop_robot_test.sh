@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Check if gameserver is running
-count=2
+count=20
 cd ~/
 rm -rf result
 mkdir result
@@ -14,7 +14,7 @@ appendResult () {
     cd -
 }
 
-for i in 1 2 3 4 5 6
+for i in {1 .. count .. 1}
 do
     cd ~/game/
     # kill all process about game

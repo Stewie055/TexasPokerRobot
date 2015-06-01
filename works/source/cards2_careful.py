@@ -218,7 +218,7 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 		elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 			return  'call'
 		else:
-			return 'check' 
+			return 'fold' 
 def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2,my_bet_history):
 	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
@@ -542,7 +542,7 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'fold'
 
 def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player,rank3,rank4,rankboard,my_bet_history):
-	if sum(my_bet_history)>=800 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
+	if sum(my_bet_history)>=600 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
 		return 'fold'
 	else:	
 		if cardround==1:
@@ -687,7 +687,7 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 				return 'fold'
 
 def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,num_player,rank2,rank3,my_bet_history):
-	if sum(my_bet_history)>=600 and rank3 == rank2 and rank3>3325:
+	if sum(my_bet_history)>=400 and rank3 == rank2 and rank3>3325:
 		return 'fold'
 	else:	
 		rank2 = getRank2(card)

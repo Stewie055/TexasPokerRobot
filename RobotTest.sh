@@ -84,8 +84,8 @@ echo "start playmates"
 
 
 echo "start your game"
-# nohup ./game 127.0.0.1 6000 127.0.0.8 6008 8888 >my.txt 2>&1&
-./game 127.0.0.1 6000 127.0.0.8 6008 8888
+nohup ./game 127.0.0.1 6000 127.0.0.8 6008 8888 >my.txt 2>&1&
+# ./game 127.0.0.1 6000 127.0.0.8 6008 8888
 #gdb ./game -ex "r 127.0.0.1 6000 127.0.0.8 6008 8888"
 
 popd >/dev/null

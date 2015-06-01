@@ -221,7 +221,7 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2,my_bet_history):
 	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
-	if (sum(my_bet_history) <=100 or sum(my_bet_history)>400) and  rank2>6185:
+	if (sum(my_bet_history) <=100 or sum(my_bet_history)>400) and  rank2>6185 and (percentage[4]<0.3 or percentage[5]<0.3):
 		return 'fold'
 	else:
 		if cardround==1:
@@ -541,7 +541,7 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'fold'
 
 def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player,rank3,rank4,rankboard,my_bet_history):
-	if sum(my_bet_history)>=1200 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
+	if sum(my_bet_history)>=800 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
 		return 'fold'
 	else:	
 		if cardround==1:
@@ -686,11 +686,12 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 				return 'fold'
 
 def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,num_player,rank2,rank3,my_bet_history):
-	if  sum(my_bet_history)>800 and rank3 == rank2 and rank3>3325:
+	(index1,index2)= getCardPercentageRank(card,percentage)
+	del_index = index2-index1
+	if  sum(my_bet_history)>600 and rank3 == rank2 and rank3>3325 and (percentage[4]<0.2 or percentage[5]<0.2) :
 		return 'fold'
 	else:
-		(index1,index2)= getCardPercentageRank(card,percentage)
-		del_index = index2-index1
+
 		if cardround==1:
 			if rank3<rank2:
 				if rank2<=322 :
