@@ -56,111 +56,38 @@ def getCardPercentageRank(card,percentage):
 
 def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_player,blind_flag):
 	if blind_flag==1:	
-		if cardround<=2:
-			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-				return 'call'
-			elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-				return 'call'
-			elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
-				return 'call'
-			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-				return  'call'
-			elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
-				return  'call'
-			elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-				return 'call'
-			elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-				return 'call'	
-			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-				return 'check'
-			else:
-				return 'fold' 
-		elif cardround==3:
-			oppostyleblind = getOppoStyle(oppobehaveblind,oppobehavenumblind,num_player)
-			if oppostyleblind.count('aggresive')>=1 or oppostyleblind.count('attack')>=2:
+		if max(oppobehavenumblind)>300:
+			return 'fold'
+		else:	
+			if cardround<=2:
 				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
 					return 'call'
-				elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
-					return 'call'
-				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-					return  'check'
-				elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
-					return  'check'
 				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
 					return 'call'
-				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-					return 'call'
-				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-					return 'check'	
-				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'check'
-				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'fold'
-				elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'fold'
-				else:
-					return 'fold' 
-			elif oppostyleblind.count('attack')>=1:
-				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-					return 'raise 100'
-				elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+				elif (card[0][0] in ['A','K']  or card[1][0] in ['A','K'] ) and card[0][1]==card[1][1]:#mid flush
 					return 'call'
 				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
 					return  'call'
-				elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+				elif card[0][1]==card[1][1] and card[0][0] in['T','9','8','7','6','5','4','3','2'] or card[1][0] in['T','9','8','7','6','5','4','3','2'] :#small flush
 					return  'call'
-				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-					return 'raise 100'
 				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
 					return 'call'
 				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
 					return 'call'	
 				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
+					return 'check'
 				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
 					return 'check'
 				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
@@ -169,61 +96,148 @@ def makeDecisionBlind(card,cardround,oppobehaveblind,oppobehavenumblind,num_play
 					return 'check'
 				else:
 					return 'fold' 
+			elif cardround==3:
+				oppostyleblind = getOppoStyle(oppobehaveblind,oppobehavenumblind,num_player)
+				if oppostyleblind.count('aggresive')>=1 or oppostyleblind.count('attack')>=2:
+					if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+						return 'call'
+					elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+						return 'call'
+					elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+						return  'check'
+					elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+						return  'check'
+					elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+						return 'call'
+					elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+						return 'call'
+					elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+						return 'check'	
+					elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'fold'
+					elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'fold'
+					else:
+						return 'fold' 
+				elif oppostyleblind.count('attack')>=1:
+					if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+						return 'raise 100'
+					elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+						return 'call'
+					elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+						return  'call'
+					elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+						return  'call'
+					elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+						return 'raise 100'
+					elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+						return 'call'
+					elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+						return 'call'	
+					elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'check'
+					else:
+						return 'fold' 
+				else:
+					if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+						return 'raise 200'
+					elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+						return 'raise 100'
+					elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+						return  'call'
+					elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
+						return  'call'
+					elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
+						return 'raise 200'
+					elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
+						return 'call'
+					elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
+						return 'call'	
+					elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
+						return 'call'
+					else:
+						return 'fold' 
 			else:
-				if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-					return 'raise 200'
-				elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
-					return 'raise 100'
-				elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-					return  'call'
-				elif card[0][1]==card[1][1] and card[0][0] in['9','8','7','6','5','4','3','2'] or card[1][0] in['9','8','7','6','5','4','3','2'] :#small flush
-					return  'call'
-				elif card[0][0]in ['A','K','Q','J'] and card[1][0]in ['A','K','Q','J'] and card[0][1]==card[1][1]:#big flush
-					return 'raise 200'
-				elif (card[0][0]in ['A','K','Q','J'] or card[1][0]in ['A','K','Q','J'] )and card[0][1]!=card[1][1] and card[0][0]!=card[1][0]:
-					return 'call'
-				elif card[0][0]in ['T','9','8','7','6','5','4','3','2'] and card[1][0]in  ['T','9','8','7','6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]==card[1][1]:
-					return 'call'	
-				elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in   ['A','K','Q','J','T'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['K','Q','J','T','9'] and card[1][0]in   ['K','Q','J','T','9'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['Q','J','T','9','8'] and card[1][0]in   ['Q','J','T','9','8'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['J','T','9','8','7'] and card[1][0]in   ['J','T','9','8','7'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['T','9','8','7','6'] and card[1][0]in   ['T','9','8','7','6']and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['9','8','7','6','5'] and card[1][0]in  ['9','8','7','6','5'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in['8','7','6','5','4']and card[1][0]in   ['8','7','6','5','4']  and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['7','6','5','4','3'] and card[1][0]in  ['7','6','5','4','3'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['6','5','4','3','2'] and card[1][0]in    ['6','5','4','3','2'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				elif card[0][0]in ['5','4','3','2','A'] and card[1][0]in    ['5','4','3','2','A'] and card[0][0]!=card[1][0] and card[0][1]!=card[1][1]:
-					return 'call'
-				else:
-					return 'fold' 
-		else:
-			return 'call'
+				return 'call'
 	else:
-		if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
-			return 'call'
-		elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in ['A','K','Q','J','T'] and card[0][1]==card[1][1]:#big flush
-			return 'call'
-		elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
-			return 'call'
-		elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
-			return  'call'
-		else:
-			return 'fold' 
+			if card[0][0] in ['A','K','Q','J','T']  and card[1][0] in ['A','K','Q','J','T']  and card[0][0]==card[1][0]:#big pair
+
+				return 'call'
+			elif card[0][0]in ['A','K','Q','J','T'] and card[1][0]in ['A','K','Q','J','T'] and card[0][1]==card[1][1]:#big flush
+				return 'call'
+			elif (card[0][0] in ['A','K','Q','J']  or card[1][0] in ['A','K','Q','J'] ) and card[0][1]==card[1][1]:#mid flush
+				if max(oppobehavenumblind)>300:
+					return 'fold'	
+				else:			
+					return 'call'
+			elif card[0][0]==card[1][0] and card[0][0] in ['9','8','7','6','5','4','3','2']: #small pair
+				if max(oppobehavenumblind)>300:
+					return 'fold'	
+				else:			
+					return 'call'
+			else:
+				return 'check' 
 def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,num_player,rank2,my_bet_history):
 	(index1,index2)= getCardPercentageRank(card,percentage)
 	del_index = index2-index1
-	if (sum(my_bet_history) <=200 or sum(my_bet_history)>=300) and  rank2>6185:
+	if max(oppobehavenumflop)>1000 and rank2>6185:
 		return 'fold'
+	elif (sum(my_bet_history) <=200 or sum(my_bet_history)>=300) and  rank2>6185 and (percentage[4]<0.3 or percentage[5]<0.3) :
+		return 'fold'
+        elif rank2>6185 and (percentage[4]<0.3 or percentage<[5]<0.3) and max(oppobehavenumflop)>1000:
+                return 'fold'
 	else:
 		if cardround==1:
 				if rank2<=322 :
@@ -542,7 +556,9 @@ def makeDecisionFlop(card,cardround,percentage,oppobehaveflop,oppobehavenumflop,
 					return 'fold'
 
 def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_player,rank3,rank4,rankboard,my_bet_history):
-	if sum(my_bet_history)>=600 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
+	if max(oppobehavenumriver)>1000 and rank4 == rank3 and rank4 >2467:
+		return 'fold'
+	elif sum(my_bet_history)>=600 and (rank4 == rank3  or rank4 == rankboard ) and  rank4>2467:
 		return 'fold'
 	else:	
 		if cardround==1:
@@ -687,8 +703,12 @@ def makeDecisionRiver(card,cardround,oppobehaveriver,oppobehavenumriver,num_play
 				return 'fold'
 
 def makeDecisionTurn(card,cardround,percentage,oppobehaveturn,oppobehavenumturn,num_player,rank2,rank3,my_bet_history):
-	if sum(my_bet_history)>=400 and rank3 == rank2 and rank3>3325:
+	if max(oppobehavenumturn)>800 and sum(my_bet_history)>500 and rank3 > 3325 :
 		return 'fold'
+	elif sum(my_bet_history)>=400 and rank3 == rank2 and rank3>3325:
+		return 'fold'
+        elif rank3>3325 and (percentage[4]<0.3 or percentage<[5]<0.3) and max(oppobehavenumturn)>1000:
+                return 'fold'
 	else:	
 		rank2 = getRank2(card)
 		rank3 = getRank3(card)

@@ -129,6 +129,7 @@ def makeDecisionBlindFinal(card,cardround,oppobehave,oppobehavenum,num_player,pl
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
 	threat=getPlayerThreat(num_player,playermovement,playerrank)
+	print "oppobehavenumblind=%s"%oppobehavenum	
 
 	if div_money<0.01:
 		low_b1=cc.makeDecisionBlind(card,cardround,oppobehave,oppobehavenum,num_player,blind_flag)
@@ -165,6 +166,8 @@ def makeDecisionFlopFinal(card,cardround,percentage,oppobehave,oppobehavenum,num
 
 	print my_money,all_money,div_money
 	print 'my_bet_history=%s'%my_bet_history
+	print "oppobehavenumflop=%s"%oppobehavenum	
+
 	if div_money<0.01:
 		low_f1=cc.makeDecisionFlop(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,my_bet_history)
 		print"low_f1=%s"%low_f1
@@ -197,6 +200,7 @@ def makeDecisionTurnFinal(card,cardround,percentage,oppobehave,oppobehavenum,num
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
 	print 'my_bet_history=%s'%my_bet_history
+	print "oppobehavenumturn=%s"%oppobehavenum	
 
 	if div_money<0.01:
 		low_t1 = cc.makeDecisionTurn(card,cardround,percentage,oppobehave,oppobehavenum,num_player,rank2,rank3,my_bet_history)
@@ -235,6 +239,7 @@ def makeDecisionRiverFinal(card,cardround,oppobehave,oppobehavenum,num_player,pl
 	div_money=calc_money(my_money,all_money)
 	print my_money,all_money,div_money
 	print "my_bet_history=%s"%my_bet_history
+	print "oppobehavenumriver=%s"%oppobehavenum	
 
 	if div_money<0.01:
 		low_r1=cc.makeDecisionRiver(card,cardround,oppobehave,oppobehavenum,num_player,rank3,rank4,rankboard,my_bet_history)

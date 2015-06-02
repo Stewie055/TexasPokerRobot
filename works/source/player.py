@@ -10,6 +10,7 @@ action_dic = {'fold':0,
 
 class Player:
     def __init__(self):
+        self.is_game_over = False
         self.bet = []
         self.state = []
         self.card_history = []
@@ -19,6 +20,9 @@ class Player:
     def reset_bet_and_action(self):
         self.bet = []
         self.action = []
+
+    def turn_to_game_over(self):
+        self.is_game_over = True
 
     def update_from_inquire(self, line_string):
         parameter = line_string.split(' ')

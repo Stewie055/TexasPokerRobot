@@ -75,9 +75,17 @@ def update_player_from_seat(lines):
             is_game_over = True
             print 'seat parse error'
 
+    for pid in opponent_dic:
+        oppo = opponent_dic[pid]
+        if oppo.is_game_over is False:
+            if oppo.bet != []:
+                oppo.turn_to_game_over()
+
 def update_player_from_showdown(lines):
     global opponent_dic
     global is_game_over
+    global is_first_round
+    is_first_round = True
 
     for line in lines[7:]:
         try:
@@ -155,7 +163,8 @@ def creat_oppo_array():
         oppo = opponent_dic[key]
         if oppo.state != []:
             oppobehave.append(oppo.state)
-            opponum.append(oppo.bet)
+            if oppo.is_game_over is False:
+                opponum.append(oppo.bet)
 
     return oppobehave, opponum
 
@@ -208,13 +217,13 @@ def make_decision():
             action = 'check'
     elif board_state == 'river':
         card = hand_cards + board_cards
-        try:
-            action =decision.makeDecisionRiverFinal(card,round_state,oppobehave,opponum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history)
-        except:
-            print 'my_bet_history',my_bet_history
+        # try:
+        action =decision.makeDecisionRiverFinal(card,round_state,oppobehave,opponum,num_player,playermovement,playerrank,my_money,all_money,my_bet_history)
+        # except:
+        #     print 'my_bet_history',my_bet_history
 
-            print 'river decision error'
-            action = 'check'
+        #     print 'river decision error'
+        #     action = 'check'
 
     print 'board_state is ', board_state
     print 'send message to server: %s\n' % action
