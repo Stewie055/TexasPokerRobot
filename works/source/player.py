@@ -24,10 +24,9 @@ class Player:
         parameter = line_string.split(' ')
         if parameter[4] == 'blind':
             return
-        bet = int(parameter[3])
+        self.bet = int(parameter[3])
         state = parameter[4]
 
-        self.bet.append(bet)
         self.state.append(state)
         self.action_count_history[action_dic[state]] += 1
 
