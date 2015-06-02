@@ -158,13 +158,13 @@ def card_update(command, body):
 
 def creat_oppo_array():
     oppobehave = []
-    opponum = []
+    opponum = 0
     for key in opponent_dic:
         oppo = opponent_dic[key]
         if oppo.state != []:
             oppobehave.append(oppo.state)
             if oppo.is_game_over is False:
-                opponum.append(oppo.bet)
+                opponum += oppo.bet
 
     return oppobehave, opponum
 
